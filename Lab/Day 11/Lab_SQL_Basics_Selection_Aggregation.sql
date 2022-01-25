@@ -29,7 +29,8 @@ LIMIT 5;
 -- Query 7 - What are the account_ids with the lowest loan amount that have a loan duration of 60 in the loan table?
 SELECT account_id FROM bank.loan
 WHERE duration = 60
-ORDER BY amount;
+ORDER BY amount
+LIMIT 5;
 
 -- Query 8 - What are the unique values of k_symbol in the order table?
 SELECT DISTINCT(k_symbol) FROM bank.order
@@ -112,4 +113,21 @@ FROM bank.trans
 WHERE account_id = 396;
 
 -- Query 21 - Continuing with the previous example, rank the top 10 account_ids based on their difference.
-??
+SELECT
+	DISTINCT a.account_id, (c.incoming_amount - b.outgoing_amount) AS difference
+FROM 
+	bank.trans a
+LEFT JOIN
+	(SELECT account_id, FLOOR(SUM(amount)) AS outgoing_amount FROM bank.trans
+	WHERE type = 'VYDAJ'
+	GROUP BY 1
+	ORDER BY 1) b
+ON a.account_id = b.account_id
+LEFT JOIN 
+	(SELECT account_id, FLOOR(SUM(amount)) AS incoming_amount FROM bank.trans
+	WHERE type = 'PRIJEM'
+	GROUP BY 1
+	ORDER BY 1) c
+ON a.account_id = c.account_id
+ORDER BY 2 DESC
+LIMIT 10;
