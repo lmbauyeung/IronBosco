@@ -100,11 +100,9 @@ FROM
 WHERE
 	customer_id IN
 	(SELECT customer_id FROM
-		(SELECT customer_id, AVG(amount) AS average_amount_per_customer 
+		(SELECT customer_id, SUM(amount) AS total_amount_per_customer 
         FROM payment
 		GROUP BY 1
-		HAVING average_amount_per_customer >
-			(SELECT AVG(average_amount_per_customer) AS overall_average_amount FROM
-				(SELECT customer_id, AVG(amount) AS average_amount_per_customer
-				FROM payment
-				GROUP BY 1) a)) b);
+		HAVING total_amount_per_customer >
+			(SELECT SUM(amount)/COUNT(DISTINCT customer_id) FROM payment)) b);
+
