@@ -3,7 +3,7 @@ USE sakila;
 
 -- 1. Which actor has appeared in the most films?
 SELECT 
-	a.actor_id, b.first_name, b.first_name, COUNT(*) as number_of_appearances
+	a.actor_id, b.first_name, b.last_name, COUNT(*) as number_of_appearances
 FROM 
 	film_actor a
 LEFT JOIN
